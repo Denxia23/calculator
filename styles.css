@@ -109,6 +109,8 @@ body {
     background-color: var(--clr-dark-600);
     border-radius: 100%;
     font-size: 2.1rem;
+    user-select: none;
+    cursor: pointer;
 }
 
 .buttons div:first-child {
