@@ -1,0 +1,127 @@
+/* Variables */
+:root {
+    --ff-primary: "Poppins", sans-serif;
+    --clr-bg: #FFA800;
+    --clr-dark-700: #222831;
+    --clr-dark-600: #393E46;
+    --clr-accent-700: #FF4C29;
+    --clr-accent-600: #F2792E;
+}
+
+/* css reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+ul[role="list"] {
+    list-style: none;
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--ff-primary);
+}
+
+/* global rules */
+body {
+    background-color: var(--clr-bg);
+    overflow: hidden;
+}
+
+/* calculator */
+
+.calculator {
+    width: 100%;
+    min-height: 100vh;
+    margin-inline: auto;
+    background-color: var(--clr-dark-700);
+}
+
+.display {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding-right: 40px;
+    color: white;
+    height: 28vh;
+    width: 100%;
+    background-color: var(--clr-dark-600);
+    border-radius: 8px 8px 35px 35px;
+    
+}
+
+.display .container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.display .history {
+    position: absolute;
+    top: 30px;
+    left: 25px;
+}
+
+.display .container .result {
+    align-self: flex-end;
+    font-size: 1.75rem;
+    font-weight: 400;
+    opacity: 0.75;
+}
+
+.display .operation {
+    font-size: 2.6rem;
+}
+
+.buttons {
+    width: 100%;
+    height:  70vh;
+    margin-inline: auto;
+    padding: 40px 10px;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    row-gap: 10px;
+    column-gap: 10px;
+}
+
+.buttons div {
+    display: flex;
+    align-items: center;
+    margin-inline: auto;
+    justify-content: center;
+    width: 75px;
+    height: 75px;
+    color: white;
+    background-color: var(--clr-dark-600);
+    border-radius: 100%;
+    font-size: 2.1rem;
+}
+
+.buttons div:first-child {
+    grid-column: span 2;
+    width: 100%;
+    border-radius: 40px;
+    background-color: var(--clr-accent-700);
+}
+
+.buttons div:last-child {
+    background-color: var(--clr-accent-700);
+}
+
+.buttons .btn-operation {
+    background-color: var(--clr-accent-600);
+}
