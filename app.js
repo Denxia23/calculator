@@ -1,5 +1,7 @@
 //display functions
-
+function updateDisplay(displayOperation,operation) {
+    displayOperation.innerText = operation
+}
 
 //math functions
 function add(a,b) {
@@ -24,24 +26,23 @@ function percentage(a,b) {
 
 function operate(operation) {
     let array = operation.split(" ");
-
+    let result;
     //perform multiplication and division first
     for (let i = 0; i < array.length - 1; i++) {
-        if (array[i] === "*") {
-            let result = multiply(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
+        if (array[i] === "X") {
+            result = multiply(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
             array[i] = result.toString();
             array.splice(i - 1,1);
             array.splice(i,1);
             i -= 2;
-           
-        } else if (array[i] === "/") {
-            let result = divide(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
+        } else if (array[i] === "÷") {
+            result = divide(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
             array[i] = result.toString();
             array.splice(i - 1,1);
             array.splice(i,1);
             i -= 2;
         } else if (array[i] === "%") {
-            let result = percentage(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
+            result = percentage(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
             array[i] = result.toString();
             array.splice(i - 1,1);
             array.splice(i,1);
@@ -52,20 +53,21 @@ function operate(operation) {
     //perform addition and subtraction
     for (let i = 0; i < array.length - 1; i++) {
         if (array[i] === "+") {
-            let result = add(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
+            result = add(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
             array[i] = result.toString();
             array.splice(i - 1,1);
             array.splice(i,1);
             i -= 2;
            
         } else if (array[i] === "-") {
-            let result = substract(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
+            result = substract(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
             array[i] = result.toString();
             array.splice(i - 1,1);
             array.splice(i,1);
             i -= 2;
         }
     }
+    return array[0];
 }
 
 function main() {
@@ -73,16 +75,34 @@ function main() {
     const displayResult = document.querySelector(".display .result");
 
     let operation = "";
-    const digits = ["1","2","3","4","5","6","7","8","9","0"];
-    const operations = ["+","-","x","/","%"];
+    const digits = ["1","2","3","4","5","6","7","8","9","0","."];
 
     const buttons = document.querySelectorAll(".buttons div");
 
     for (const button of buttons) {
+        if (button.dataset.value === "=") {
+            button.addEventListener("click", () => {
+                operation = operate(operation);
+                updateDisplay(displayResult,operation);
+            })
+            continue;
+        }
+        
+        if (button.dataset.value === "clear") {
+            button.addEventListener("click", () => {
+                operation = "";
+                updateDisplay(displayOperation,operation);
+            })
+            continue;
+        }
+
         button.addEventListener("click", () => {
             operation += digits.includes(button.innerText) ? button.innerText : ` ${button.innerText} `;
-            console.log(operation);
+            updateDisplay(displayOperation,operation);
         })
+
+
+
     }
 }
 
