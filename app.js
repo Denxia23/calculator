@@ -1,6 +1,6 @@
 //display functions
-function updateDisplay(displayOperation,operation) {
-    displayOperation.innerText = operation
+function updateDisplay(display,text) {
+    display.innerText = text
 }
 
 //math functions
@@ -75,7 +75,7 @@ function main() {
     const displayResult = document.querySelector(".display .result");
 
     let operation = "";
-    const digits = ["1","2","3","4","5","6","7","8","9","0","."];
+    const operations = ["+","-","X","÷","%"];
 
     const buttons = document.querySelectorAll(".buttons div");
 
@@ -92,12 +92,13 @@ function main() {
             button.addEventListener("click", () => {
                 operation = "";
                 updateDisplay(displayOperation,operation);
+                updateDisplay(displayResult,"");
             })
             continue;
         }
 
         button.addEventListener("click", () => {
-            operation += digits.includes(button.innerText) ? button.innerText : ` ${button.innerText} `;
+            operation += operations.includes(button.innerText) ?` ${button.innerText} `  :button.innerText;
             updateDisplay(displayOperation,operation);
         })
 

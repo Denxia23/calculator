@@ -74,14 +74,26 @@ body {
     flex-direction: column;
 }
 
+.display .container h2 {
+    width: 100%;
+}
+
+.display .overflow-container {
+    text-align: right;
+    width: 100%;
+}
+
 .display .history {
     position: absolute;
+    width: 40px;
     top: 30px;
     left: 25px;
 }
 
 .display .container .result {
     align-self: flex-end;
+    min-height: 42.06px;
+    margin-bottom: -50px;
     font-size: 1.75rem;
     font-weight: 400;
     opacity: 0.75;
@@ -90,6 +102,7 @@ body {
 .display .operation {
     font-size: 2.6rem;
     letter-spacing: 0.2rem;
+    font-weight: 400;
 }
 
 .buttons {
@@ -107,8 +120,8 @@ body {
 .buttons div {
     display: flex;
     align-items: center;
-    margin-inline: auto;
     justify-content: center;
+    margin-inline: auto;
     max-height: 90px;
     aspect-ratio: 1/1;
     height: 90%;
@@ -136,11 +149,19 @@ body {
     background-color: var(--clr-accent-600);
 }
 
+.buttons div[data-value="delete"] img {
+    width: 40px;
+}
+
 @media screen and (min-width: 420px) and (max-width: 700px) {
     .buttons div {
         max-height: 100px;
         width: 100%;
         border-radius: 40px;
+    }
+
+    .buttons {
+        column-gap: 20px;
     }
     
 }
