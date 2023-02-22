@@ -59,28 +59,19 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    padding-right: 40px;
+    padding: 0 40px 0 20px;
     color: white;
     height: 28vh;
     width: 100%;
     background-color: var(--clr-dark-600);
     border-radius: 8px 8px 35px 35px;
-    
 }
 
 .display .container {
+    width: 100%;
     display: flex;
     gap: 10px;
     flex-direction: column;
-}
-
-.display .container h2 {
-    width: 100%;
-}
-
-.display .overflow-container {
-    text-align: right;
-    width: 100%;
 }
 
 .display .history {
@@ -90,8 +81,30 @@ body {
     left: 25px;
 }
 
+.display .overflow {
+    width: 100%;
+}
+
+.display .container h2 {
+    display: flex;
+    flex-direction: row-reverse;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+::-webkit-scrollbar {
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--clr-dark-700);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--clr-accent-600);
+}
+
 .display .container .result {
-    align-self: flex-end;
     min-height: 42.06px;
     margin-bottom: -50px;
     font-size: 1.75rem;
