@@ -37,6 +37,9 @@ function operate(operation) {
             i -= 2;
         } else if (array[i] === "÷") {
             result = divide(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
+            if (result === "ERROR") {
+              return "ERROR";
+            }
             array[i] = result.toString();
             array.splice(i - 1,1);
             array.splice(i,1);
@@ -96,14 +99,19 @@ function main() {
             })
             continue;
         }
+        
+        if (button.dataset.value === "delete") {
+          button.addEventListener("click", () => {
+            operation = operation.endsWith(" ") ? operation.slice(0,operation.length - 3) : operation.slice(0,operation.length - 1);
+            updateDisplay(displayOperation,operation);
+          })
+          continue;
+        }
 
         button.addEventListener("click", () => {
             operation += operations.includes(button.innerText) ?` ${button.innerText} `  :button.innerText;
             updateDisplay(displayOperation,operation);
         })
-
-
-
     }
 }
 
