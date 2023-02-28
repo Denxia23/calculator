@@ -1,8 +1,7 @@
-//display functions
+//display function
 function updateDisplay(display,text) {
-    display.innerText = text
+    display.innerText = text;
 }
-
 //math functions
 function add(a,b) {
     return a + b;
@@ -27,9 +26,10 @@ function percentage(a,b) {
 function operate(operation) {
     let array = operation.split(" ");
     let result;
+    
     //perform multiplication and division first
     for (let i = 0; i < array.length - 1; i++) {
-        if (array[i] === "X") {
+        if (array[i] === "×") {
             result = multiply(parseFloat(array[i - 1]), parseFloat(array[i + 1]));
             array[i] = result.toString();
             array.splice(i - 1,1);
@@ -73,20 +73,30 @@ function operate(operation) {
     return array[0];
 }
 
+//main
 function main() {
     const displayOperation = document.querySelector(".display .operation");
     const displayResult = document.querySelector(".display .result");
 
     let operation = "";
-    const operations = ["+","-","X","÷","%"];
+    let history = [];
 
+    const operations = /([+×÷%-])/;
     const buttons = document.querySelectorAll(".buttons div");
 
+    //buttons
     for (const button of buttons) {
+        //performs the operation, refreshes the result in display and saves the operation in history
         if (button.dataset.value === "=") {
             button.addEventListener("click", () => {
-                operation = operate(operation);
-                updateDisplay(displayResult,operation);
+                if (operations.test(operation)) {
+                    historyElement = operation;
+                    operation = operate(operation);
+                    updateDisplay(displayOperation,operation);
+                    updateDisplay(displayResult,"");
+                    historyElement += ` = ${operation}`;
+                    history.push(historyElement);
+                }
             })
             continue;
         }
@@ -101,18 +111,91 @@ function main() {
         }
         
         if (button.dataset.value === "delete") {
-          button.addEventListener("click", () => {
-            operation = operation.endsWith(" ") ? operation.slice(0,operation.length - 3) : operation.slice(0,operation.length - 1);
-            updateDisplay(displayOperation,operation);
-          })
-          continue;
+            button.addEventListener("click", () => {
+                operation = operation.endsWith(" ") ? operation.slice(0,operation.length - 3) : operation.slice(0,operation.length - 1);
+                updateDisplay(displayOperation,operation);
+
+                //performs the operation and refreshes the result in display if possible
+                if (operation.endsWith(" ")) {
+                    if (operations.test(operation.slice(0,operation.length - 3))) {
+                        updateDisplay(displayResult,operate(operation.slice(0,operation.length - 3)));
+                    } else {
+                        updateDisplay(displayResult,"");
+                    }
+                } else if (operations.test(operation)){
+                    updateDisplay(displayResult,operate(operation));
+                }
+            })
+            continue;
         }
 
         button.addEventListener("click", () => {
-            operation += operations.includes(button.innerText) ?` ${button.innerText} `  :button.innerText;
+            if (operations.test(button.innerText) && !operation.endsWith(" ") && operation !== "") {
+                operation += ` ${button.innerText} `;
+                updateDisplay(displayOperation,operation);
+                return;
+            }
+            
+            if (!operations.test(button.innerText)) {
+                operation += button.innerText;
+                
+                //performs the operation and refreshes the result if possible
+                if (operations.test(operation)) {
+                    updateDisplay(displayResult,operate(operation));
+                }
+            }
             updateDisplay(displayOperation,operation);
+            
         })
     }
+    
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            if (operations.test(operation)) {
+                historyElement = operation;
+                operation = operate(operation);
+                updateDisplay(displayOperation,operation);
+                updateDisplay(displayResult,"");
+                historyElement += ` = ${operation}`;
+                history.push(historyElement);
+            }
+            return;
+        } 
+        
+        if (e.key === "Backspace") {
+            operation = operation.endsWith(" ") ? operation.slice(0,operation.length - 3) : operation.slice(0,operation.length - 1);
+            updateDisplay(displayOperation,operation);
+
+            //performs the operation and refreshes the result in display if possible
+            if (operation.endsWith(" ")) {
+                if (operations.test(operation.slice(0,operation.length - 3))) {
+                    updateDisplay(displayResult,operate(operation.slice(0,operation.length - 3)));
+                } else {
+                    updateDisplay(displayResult,"");
+                }
+            } else if (operations.test(operation)){
+                updateDisplay(displayResult,operate(operation));
+            }
+            return;
+        } 
+        
+        if (!operation.endsWith(" ") && /([+-])/.test(e.key) && operation !== "") {
+            operation += ` ${e.key} `;
+            updateDisplay(displayOperation,operation)
+            return;
+        }
+         
+        if (/([0-9.])/.test(e.key)){
+            operation += e.key;    
+            //performs the operation and refreshes the result if possible
+            if (operations.test(operation)) {
+                updateDisplay(displayResult,operate(operation));
+            }
+            updateDisplay(displayOperation,operation)
+
+        } return;
+        
+    })
 }
 
 main();
