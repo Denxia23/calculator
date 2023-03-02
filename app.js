@@ -23,8 +23,8 @@ function percentage(a,b) {
     return b * (a/100);
 }
 
-function operate(operation) {
-    let array = operation.split(" ");
+function operate(expression) {
+    let array = expression.split(" ");
     let result;
     
     //perform multiplication and division first
@@ -75,26 +75,26 @@ function operate(operation) {
 
 //main
 function main() {
-    const displayOperation = document.querySelector(".display .operation");
+    const displayExpression = document.querySelector(".display .expression");
     const displayResult = document.querySelector(".display .result");
 
-    let operation = "";
+    let expression = "";
     let history = [];
 
-    const operations = /([+×÷%-])/;
+    const operators = /([+×÷%-])/;
     const buttons = document.querySelectorAll(".buttons div");
 
     //buttons
     for (const button of buttons) {
-        //performs the operation, refreshes the result in display and saves the operation in history
+        //performs the expression, refreshes the result in display and saves the expression in history
         if (button.dataset.value === "=") {
             button.addEventListener("click", () => {
-                if (operations.test(operation)) {
-                    historyElement = operation;
-                    operation = operate(operation);
-                    updateDisplay(displayOperation,operation);
+                if (operators.test(expression)) {
+                    historyElement = expression;
+                    expression = operate(expression);
+                    updateDisplay(displayExpression,expression);
                     updateDisplay(displayResult,"");
-                    historyElement += ` = ${operation}`;
+                    historyElement += ` = ${expression}`;
                     history.push(historyElement);
                 }
             })
@@ -103,8 +103,8 @@ function main() {
         
         if (button.dataset.value === "clear") {
             button.addEventListener("click", () => {
-                operation = "";
-                updateDisplay(displayOperation,operation);
+                expression = "";
+                updateDisplay(displayExpression,expression);
                 updateDisplay(displayResult,"");
             })
             continue;
@@ -112,87 +112,124 @@ function main() {
         
         if (button.dataset.value === "delete") {
             button.addEventListener("click", () => {
-                operation = operation.endsWith(" ") ? operation.slice(0,operation.length - 3) : operation.slice(0,operation.length - 1);
-                updateDisplay(displayOperation,operation);
+                expression = expression.endsWith(" ") ? expression.slice(0,expression.length - 3) : expression.slice(0,expression.length - 1);
+                updateDisplay(displayExpression,expression);
 
-                //performs the operation and refreshes the result in display if possible
-                if (operation.endsWith(" ")) {
-                    if (operations.test(operation.slice(0,operation.length - 3))) {
-                        updateDisplay(displayResult,operate(operation.slice(0,operation.length - 3)));
+                //performs the expression and refreshes the result in display if possible
+                
+                //checks if the expression ends with an expression, and if it isn't a single number
+                if (expression.endsWith(" ")) {
+                    if (operators.test(expression.slice(0,expression.length - 3))) {
+                        updateDisplay(displayResult,operate(expression.slice(0,expression.length - 3)));
                     } else {
                         updateDisplay(displayResult,"");
                     }
-                } else if (operations.test(operation)){
-                    updateDisplay(displayResult,operate(operation));
+                    return;
+                } 
+                
+                if (operators.test(expression)) {
+                    if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+                        if (operators.test(expression.slice(0,expression.length - 4))) {
+                            updateDisplay(displayResult,operate(expression.slice(0,expression.length - 4)));
+                        } else {
+                            updateDisplay(displayResult,"");
+                        }
+                        return;
+                    }
+                    updateDisplay(displayResult,operate(expression));
                 }
             })
             continue;
         }
 
         button.addEventListener("click", () => {
-            if (operations.test(button.innerText) && !operation.endsWith(" ") && operation !== "") {
-                operation += ` ${button.innerText} `;
-                updateDisplay(displayOperation,operation);
+            if (operators.test(button.innerText) && !expression.endsWith(" ") && expression !== "") {
+                expression += ` ${button.innerText} `;
+                updateDisplay(displayExpression,expression);
                 return;
             }
             
-            if (!operations.test(button.innerText)) {
-                operation += button.innerText;
+            if (!operators.test(button.innerText)) {
+                //prevents user from inputting numbers with more than one "."
+                if (button.innerText === "." && expression.slice(expression.lastIndexOf(" ")).includes(".")) {
+                    return;
+                }
+                expression += button.innerText;
+                updateDisplay(displayExpression,expression);
                 
-                //performs the operation and refreshes the result if possible
-                if (operations.test(operation)) {
-                    updateDisplay(displayResult,operate(operation));
+                //performs the expression and refreshes the result if possible
+                if (operators.test(expression)) {
+                    if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+                        updateDisplay(displayExpression,expression);
+                        return;
+                    }
+                    updateDisplay(displayResult,operate(expression));
                 }
             }
-            updateDisplay(displayOperation,operation);
-            
         })
     }
-    
+    //keyboard support
     window.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-            if (operations.test(operation)) {
-                historyElement = operation;
-                operation = operate(operation);
-                updateDisplay(displayOperation,operation);
+            if (operators.test(expression)) {
+                historyElement = expression;
+                expression = operate(expression);
+                updateDisplay(displayExpression,expression);
                 updateDisplay(displayResult,"");
-                historyElement += ` = ${operation}`;
+                historyElement += ` = ${expression}`;
                 history.push(historyElement);
             }
             return;
         } 
         
         if (e.key === "Backspace") {
-            operation = operation.endsWith(" ") ? operation.slice(0,operation.length - 3) : operation.slice(0,operation.length - 1);
-            updateDisplay(displayOperation,operation);
+            expression = expression.endsWith(" ") ? expression.slice(0,expression.length - 3) : expression.slice(0,expression.length - 1);
+            updateDisplay(displayExpression,expression);
 
-            //performs the operation and refreshes the result in display if possible
-            if (operation.endsWith(" ")) {
-                if (operations.test(operation.slice(0,operation.length - 3))) {
-                    updateDisplay(displayResult,operate(operation.slice(0,operation.length - 3)));
+            //performs the expression and refreshes the result in display if possible
+            if (expression.endsWith(" ")) {
+                if (operators.test(expression.slice(0,expression.length - 3))) {
+                    updateDisplay(displayResult,operate(expression.slice(0,expression.length - 3)));
                 } else {
                     updateDisplay(displayResult,"");
                 }
-            } else if (operations.test(operation)){
-                updateDisplay(displayResult,operate(operation));
+                return;
+            } 
+            
+            if (operators.test(expression)) {
+                if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+                    if (operators.test(expression.slice(0,expression.length - 4))) {
+                        updateDisplay(displayResult,operate(expression.slice(0,expression.length - 4)));
+                    } else {
+                        updateDisplay(displayResult,"");
+                    }
+                    return;
+                }
+                updateDisplay(displayResult,operate(expression));
             }
-            return;
         } 
         
-        if (!operation.endsWith(" ") && /([+-])/.test(e.key) && operation !== "") {
-            operation += ` ${e.key} `;
-            updateDisplay(displayOperation,operation)
+        if (!expression.endsWith(" ") && /([+-])/.test(e.key) && expression !== "") {
+            expression += ` ${e.key} `;
+            updateDisplay(displayExpression,expression)
             return;
         }
          
         if (/([0-9.])/.test(e.key)){
-            operation += e.key;    
-            //performs the operation and refreshes the result if possible
-            if (operations.test(operation)) {
-                updateDisplay(displayResult,operate(operation));
+            if (e.key === "." && expression.slice(expression.lastIndexOf(" ")).includes(".")) {
+                return;
             }
-            updateDisplay(displayOperation,operation)
-
+            expression += e.key;  
+            updateDisplay(displayExpression,expression)  
+            
+            //performs the expression and refreshes the result if possible
+            if (operators.test(expression)) {
+                if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+                    updateDisplay(displayExpression,expression);
+                    return;
+                }
+                updateDisplay(displayResult,operate(expression));
+            }
         } return;
         
     })
