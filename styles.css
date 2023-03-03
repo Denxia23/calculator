@@ -127,11 +127,11 @@ button {
     width: 100%;
     height: 70vh;
     margin-inline: auto;
-    padding: 40px 10px;
+    padding: 6% 1.7%;
     display: grid;
     grid-template-columns: repeat(4,1fr);
-    row-gap: 10px;
-    column-gap: 10px;
+    row-gap: 1%;
+    column-gap: 1%;
     align-items: center;
 }
 
@@ -166,20 +166,26 @@ button {
 }
 
 .buttons button[data-value="delete"] img {
-    width: 40px;
+    width: 38px;
 }
 
-@media screen and (min-width: 420px) and (max-width: 700px) {
+@media screen and (min-width: 390px) and (max-width: 475px) {
+    .buttons {
+        padding: 9% 1.9%;
+        gap: 2.5%;
+    }
+}
+
+
+@media screen and (min-width: 475px) and (max-width: 700px) {
     .buttons button {
-        max-height: 100px;
         width: 100%;
         border-radius: 40px;
     }
 
     .buttons {
-        column-gap: 20px;
-    }
-    
+        column-gap: 15px;
+    }    
 }
 
 @media screen and (min-width: 700px) {
@@ -195,5 +201,9 @@ button {
     }
     .buttons {
         height: 75%;
+        padding: 40px 10px;
+        column-gap: 10px;
+        row-gap: 10px;
     }
+
 }
