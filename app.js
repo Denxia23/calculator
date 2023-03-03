@@ -6,6 +6,56 @@ function updateDisplay(display,text) {
 function clearDisplay(display) {
     display.innerText = "";
 }
+
+function result(expression,displayExpression,displayResult,history) {
+    historyElement = expression;
+    expression = operate(expression);
+    updateDisplay(displayExpression,expression);
+    clearDisplay(displayResult);
+    historyElement += ` = ${expression}`;
+    history.push(historyElement);
+    return expression;
+}
+
+function autoResult(expression,operators,displayResult) {
+    if (operators.test(expression)) {
+        if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+            return;
+        }
+        updateDisplay(displayResult,operate(expression));
+    }
+}
+
+//input handle
+function handleDigit(digit,expression) {
+    if (digit === ".") {
+        if (expression.lastIndexOf(" ") === -1 && expression.slice(expression.lastIndexOf(" ") * 0).includes(".")) {
+            return expression;
+        } 
+        if (expression.slice(expression.lastIndexOf(" ")).includes(".")) return expression;               
+    }
+    expression += digit;  
+    return expression;
+}
+
+function handleOperator(operator,expression) {
+    pressedKey = operator;
+    if (pressedKey === "/") {
+        pressedKey = "÷"
+    }
+
+    if (pressedKey === "*") {
+        pressedKey = "×";
+    }
+
+    if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+        return expression;
+    }
+
+    expression += ` ${pressedKey} `;
+    return expression;
+}
+
 //math functions
 function add(a,b) {
     return a + b;
@@ -77,25 +127,7 @@ function operate(expression) {
     return array[0];
 }
 
-function result(expression,displayExpression,displayResult,history) {
-    historyElement = expression;
-    expression = operate(expression);
-    updateDisplay(displayExpression,expression);
-    clearDisplay(displayResult);
-    historyElement += ` = ${expression}`;
-    history.push(historyElement);
-    return expression;
-}
 
-function autoResult(expression,operators,displayExpression,displayResult) {
-    if (operators.test(expression)) {
-        if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
-            updateDisplay(displayExpression,expression);
-            return;
-        }
-        updateDisplay(displayResult,operate(expression));
-    }
-}
 
 //main
 function main() {
@@ -162,27 +194,19 @@ function main() {
             continue;
         }
 
+        //operators and digits
         button.addEventListener("click", () => {
             button.blur();
             if (operators.test(button.innerText) && !expression.endsWith(" ") && expression !== "") {
-                expression += ` ${button.innerText} `;
+                expression = handleOperator(button.innerText,expression);
                 updateDisplay(displayExpression,expression);
                 return;
             }
             
             if (!operators.test(button.innerText)) {
-                //prevents user from inputting numbers with more than one "."
-                if (button.innerText === ".") {
-                    if (expression.lastIndexOf(" ") === -1 && expression.slice(expression.lastIndexOf(" ") * 0).includes(".")) {
-                        return;
-                    } 
-                    if (expression.slice(expression.lastIndexOf(" ")).includes(".")) return;               
-                }
-                expression += button.innerText;
+                expression = handleDigit(button.innerText,expression);                
                 updateDisplay(displayExpression,expression);
-                
-                //performs the expression and refreshes the result if possible
-                autoResult(expression,operators,displayExpression,displayResult);
+                autoResult(expression,operators,displayResult);
             }
         })
     }
@@ -221,37 +245,21 @@ function main() {
                 }
                 updateDisplay(displayResult,operate(expression));
             }
+            return;
         } 
         
+        //operators
         if (!expression.endsWith(" ") && /([+/*-])/.test(e.key) && expression !== "") {
-            pressedKey = e.key;
-            if (pressedKey === "/") {
-                pressedKey = "÷"
-            }
-
-            if (pressedKey === "*") {
-                pressedKey = "×";
-            }
-
-            expression += ` ${pressedKey} `;
+            expression = handleOperator(e.key,expression);
             updateDisplay(displayExpression,expression);
             return;
         }
-         
-        if (/(^[0-9.]$)/.test(e.key)){
-            if (e.key === ".") {
-                if (expression.lastIndexOf(" ") === -1 && expression.slice(expression.lastIndexOf(" ") * 0).includes(".")) {
-                    return;
-                } 
-                if (expression.slice(expression.lastIndexOf(" ")).includes(".")) return;               
-            }
-            expression += e.key;  
-            updateDisplay(displayExpression,expression);  
-            
-            //performs the expression and refreshes the result if possible
-            autoResult(expression,operators,displayExpression,displayResult);
-        } return;
-        
+        //digits 
+        if (/(^[0-9.]$)/.test(e.key)) {
+            expression = handleDigit(e.key,expression);
+            updateDisplay(displayExpression,expression);            
+            autoResult(expression,operators,displayResult);
+        }  
     })
 }
 
