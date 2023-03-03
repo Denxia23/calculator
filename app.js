@@ -2,6 +2,10 @@
 function updateDisplay(display,text) {
     display.innerText = text;
 }
+
+function clearDisplay(display) {
+    display.innerText = "";
+}
 //math functions
 function add(a,b) {
     return a + b;
@@ -73,6 +77,26 @@ function operate(expression) {
     return array[0];
 }
 
+function result(expression,displayExpression,displayResult,history) {
+    historyElement = expression;
+    expression = operate(expression);
+    updateDisplay(displayExpression,expression);
+    clearDisplay(displayResult);
+    historyElement += ` = ${expression}`;
+    history.push(historyElement);
+    return expression;
+}
+
+function autoResult(expression,operators,displayExpression,displayResult) {
+    if (operators.test(expression)) {
+        if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+            updateDisplay(displayExpression,expression);
+            return;
+        }
+        updateDisplay(displayResult,operate(expression));
+    }
+}
+
 //main
 function main() {
     const displayExpression = document.querySelector(".display .expression");
@@ -82,20 +106,15 @@ function main() {
     let history = [];
 
     const operators = /([+×÷%-])/;
-    const buttons = document.querySelectorAll(".buttons div");
+    const buttons = document.querySelectorAll(".buttons button");
 
     //buttons
     for (const button of buttons) {
-        //performs the expression, refreshes the result in display and saves the expression in history
         if (button.dataset.value === "=") {
             button.addEventListener("click", () => {
-                if (operators.test(expression)) {
-                    historyElement = expression;
-                    expression = operate(expression);
-                    updateDisplay(displayExpression,expression);
-                    updateDisplay(displayResult,"");
-                    historyElement += ` = ${expression}`;
-                    history.push(historyElement);
+                //checks if the expression is valid
+                if (operators.test(expression) && !expression.endsWith(" ")) {
+                    expression = result(expression,displayExpression,displayResult,history);
                 }
             })
             continue;
@@ -104,8 +123,8 @@ function main() {
         if (button.dataset.value === "clear") {
             button.addEventListener("click", () => {
                 expression = "";
-                updateDisplay(displayExpression,expression);
-                updateDisplay(displayResult,"");
+                clearDisplay(displayExpression);
+                clearDisplay(displayResult);
             })
             continue;
         }
@@ -114,15 +133,13 @@ function main() {
             button.addEventListener("click", () => {
                 expression = expression.endsWith(" ") ? expression.slice(0,expression.length - 3) : expression.slice(0,expression.length - 1);
                 updateDisplay(displayExpression,expression);
-
-                //performs the expression and refreshes the result in display if possible
                 
-                //checks if the expression ends with an expression, and if it isn't a single number
+                //checks if the expression ends with an operation, and if it isn't a single number
                 if (expression.endsWith(" ")) {
                     if (operators.test(expression.slice(0,expression.length - 3))) {
                         updateDisplay(displayResult,operate(expression.slice(0,expression.length - 3)));
                     } else {
-                        updateDisplay(displayResult,"");
+                        clearDisplay(displayResult);
                     }
                     return;
                 } 
@@ -132,7 +149,7 @@ function main() {
                         if (operators.test(expression.slice(0,expression.length - 4))) {
                             updateDisplay(displayResult,operate(expression.slice(0,expression.length - 4)));
                         } else {
-                            updateDisplay(displayResult,"");
+                            clearDisplay(displayResult);
                         }
                         return;
                     }
@@ -158,26 +175,17 @@ function main() {
                 updateDisplay(displayExpression,expression);
                 
                 //performs the expression and refreshes the result if possible
-                if (operators.test(expression)) {
-                    if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
-                        updateDisplay(displayExpression,expression);
-                        return;
-                    }
-                    updateDisplay(displayResult,operate(expression));
-                }
+                autoResult(expression,operators,displayExpression,displayResult);
             }
+            button.blur();
         })
     }
     //keyboard support
     window.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-            if (operators.test(expression)) {
-                historyElement = expression;
-                expression = operate(expression);
-                updateDisplay(displayExpression,expression);
-                updateDisplay(displayResult,"");
-                historyElement += ` = ${expression}`;
-                history.push(historyElement);
+            //checks if the expression is valid
+            if (operators.test(expression) && !expression.endsWith(" ")) {
+                expression = result(expression,displayExpression,displayResult,history);
             }
             return;
         } 
@@ -191,7 +199,7 @@ function main() {
                 if (operators.test(expression.slice(0,expression.length - 3))) {
                     updateDisplay(displayResult,operate(expression.slice(0,expression.length - 3)));
                 } else {
-                    updateDisplay(displayResult,"");
+                    clearDisplay(displayResult);
                 }
                 return;
             } 
@@ -201,7 +209,7 @@ function main() {
                     if (operators.test(expression.slice(0,expression.length - 4))) {
                         updateDisplay(displayResult,operate(expression.slice(0,expression.length - 4)));
                     } else {
-                        updateDisplay(displayResult,"");
+                        clearDisplay(displayResult);
                     }
                     return;
                 }
@@ -209,13 +217,22 @@ function main() {
             }
         } 
         
-        if (!expression.endsWith(" ") && /([+-])/.test(e.key) && expression !== "") {
-            expression += ` ${e.key} `;
+        if (!expression.endsWith(" ") && /([+-/*])/.test(e.key) && expression !== "") {
+            pressedKey = e.key;
+            if (pressedKey === "/") {
+                pressedKey = "÷"
+            }
+
+            if (pressedKey === "*") {
+                pressedKey = "×";
+            }
+
+            expression += ` ${pressedKey} `;
             updateDisplay(displayExpression,expression)
             return;
         }
          
-        if (/([0-9.])/.test(e.key)){
+        if (/(^[0-9.]$)/.test(e.key)){
             if (e.key === "." && expression.slice(expression.lastIndexOf(" ")).includes(".")) {
                 return;
             }
@@ -223,13 +240,7 @@ function main() {
             updateDisplay(displayExpression,expression)  
             
             //performs the expression and refreshes the result if possible
-            if (operators.test(expression)) {
-                if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
-                    updateDisplay(displayExpression,expression);
-                    return;
-                }
-                updateDisplay(displayResult,operate(expression));
-            }
+            autoResult(expression,operators,displayExpression,displayResult);
         } return;
         
     })

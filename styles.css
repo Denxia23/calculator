@@ -42,8 +42,13 @@ body {
     align-items: center;
 }
 
-/* calculator */
+button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
 
+/* calculator */
 .calculator {
     width: 100%;
     display: flex;
@@ -74,7 +79,7 @@ body {
     flex-direction: column;
 }
 
-.display .history {
+.display .btn-history {
     position: absolute;
     width: 40px;
     top: 30px;
@@ -130,7 +135,7 @@ body {
     align-items: center;
 }
 
-.buttons div {
+.buttons button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -142,11 +147,9 @@ body {
     background-color: var(--clr-dark-600);
     border-radius: 100%;
     font-size: 2.1rem;
-    user-select: none;
-    cursor: pointer;
 }
 
-.buttons div:first-child {
+.buttons button:first-child {
     grid-column: span 2;
     width: 100%;
     aspect-ratio: initial;
@@ -154,7 +157,7 @@ body {
     background-color: var(--clr-accent-700);
 }
 
-.buttons div:last-child {
+.buttons button:last-child {
     background-color: var(--clr-accent-700);
 }
 
@@ -162,12 +165,12 @@ body {
     background-color: var(--clr-accent-600);
 }
 
-.buttons div[data-value="delete"] img {
+.buttons button[data-value="delete"] img {
     width: 40px;
 }
 
 @media screen and (min-width: 420px) and (max-width: 700px) {
-    .buttons div {
+    .buttons button {
         max-height: 100px;
         width: 100%;
         border-radius: 40px;

@@ -14,32 +14,33 @@
 <body>
     <div class="calculator">
         <div class="display">
-            <div class="history"><img src="./img/history.png" alt="history"></div>
+            <button class="btn-history"><img src="./img/history.png" alt="history" draggable="false"></button>
+            <div class="history"></div>
             <div class="container">
                 <h2 class="expression"></h2>
                 <h2 class="result"></h2>
             </div>
         </div>
         <div class="buttons">
-            <div data-value="clear">AC</div>
-            <div class="btn-operation">%</div>
-            <div class="btn-operation">÷</div>
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div class="btn-operation">×</div>
-            <div>4</div>
-            <div>5</div>
-            <div>6</div>
-            <div class="btn-operation">-</div>
-            <div>7</div>
-            <div>8</div>
-            <div>9</div>
-            <div class="btn-operation">+</div>
-            <div>.</div>
-            <div>0</div>
-            <div data-value="delete"><img src="./img/delete.png" alt=""></div>
-            <div data-value="=" class="btn-operation">=</div>
+            <button data-value="clear">AC</button>
+            <button class="btn-operation">%</button>
+            <button class="btn-operation">÷</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button class="btn-operation">×</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button class="btn-operation">-</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button class="btn-operation">+</button>
+            <button>.</button>
+            <button>0</button>
+            <button data-value="delete"><img src="./img/delete.png" alt="delete" draggable="false"></button>
+            <button data-value="=" class="btn-operation">=</button>
         </div>
     </div>
 </body>
