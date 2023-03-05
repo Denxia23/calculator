@@ -1,4 +1,4 @@
-/* Variables */
+/* variables */
 :root {
     --ff-primary: "Poppins", sans-serif;
     --clr-bg: #FFA800;
@@ -29,17 +29,14 @@ ul[role="list"] {
     list-style: none;
 }
 
-body {
-    min-height: 100vh;
-    font-family: var(--ff-primary);
-}
-
 /* global rules */
 body {
-    background-color: var(--clr-bg);
-    overflow: hidden;
     display: flex;
     align-items: center;
+    overflow: hidden;
+    min-height: 100vh;
+    font-family: var(--ff-primary);
+    background-color: var(--clr-bg);
 }
 
 button {
@@ -50,11 +47,11 @@ button {
 
 /* calculator */
 .calculator {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     margin-inline: auto;
+    width: 100%;
+    min-height: 100vh;
     background-color: var(--clr-dark-700);
 }
 
@@ -64,19 +61,19 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    padding: 0 40px 0 20px;
-    color: white;
-    height: 28vh;
     width: 100%;
-    background-color: var(--clr-dark-600);
+    height: 28vh;
+    padding: 0 40px 0 20px;
     border-radius: 8px 8px 35px 35px;
+    color: white;
+    background-color: var(--clr-dark-600);
 }
 
 .display .container {
-    width: 100%;
     display: flex;
     gap: 10px;
     flex-direction: column;
+    width: 100%;
 }
 
 .display .btn-history {
