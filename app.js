@@ -7,18 +7,29 @@ function clearDisplay(display) {
   display.innerText = "";
 }
 
-function result(expression, displayExpression, displayResult, history) {
-  historyElement = expression;
-  expression = operate(expression);
-  updateDisplay(displayExpression, expression);
+function getResult(expression, displayExpression, displayResult, history) {
+  result = operate(expression);
+  if (result === "ERROR") {
+    updateDisplay(displayResult,"error");
+    return expression;
+  }
+  
+  updateDisplay(displayExpression, result);
   clearDisplay(displayResult);
-  historyElement += ` = ${expression}`;
+  historyElement = `${expression} = ${result}`;
   history.push(historyElement);
-  return expression;
+  return result;
 }
 
 function autoResult(expression, operators, displayResult) {
+  if (operate(expression) === "ERROR") {
+    clearDisplay(displayResult);
+    return;
+  };
+  
   if (operators.test(expression)) {
+    if (expression[0] === "-" && !operators.test(expression.slice(1))) return
+    
     if (expression.endsWith(".") && expression[expression.length - 2] === " ") return;
     updateDisplay(displayResult, operate(expression));
   }
@@ -154,7 +165,7 @@ function main() {
         button.blur();
         //checks if the expression is valid
         if (operators.test(expression) && !expression.endsWith(" ")) {
-          expression = result(expression, displayExpression, displayResult, history);
+          expression = getResult(expression, displayExpression, displayResult, history);
         }
       });
       continue;
@@ -176,7 +187,7 @@ function main() {
         expression = expression.endsWith(" ") ? expression.slice(0, expression.length - 3) : expression.slice(0, expression.length - 1);
         updateDisplay(displayExpression, expression);
 
-        //checks if the expression ends with an operation, and if it isn't a single number
+        //checks if the expression ends with an operator, and if it isn't a single number        
         if (expression.endsWith(" ") || expression.endsWith("-")) {
           if (operators.test(expression.slice(0, expression.length - 3))) {
             updateDisplay(displayResult, operate(expression.slice(0, expression.length - 3)));
@@ -222,7 +233,7 @@ function main() {
     if (e.key === "Enter") {
       //checks if the expression is valid
       if (operators.test(expression) && !expression.endsWith(" ")) {
-        expression = result(expression, displayExpression, displayResult, history);
+        expression = getResult(expression, displayExpression, displayResult, history);
       }
       return;
     }
@@ -233,6 +244,7 @@ function main() {
 
       //performs the expression and refreshes the result in display if possible
       if (expression.endsWith(" ") || expression.endsWith("-")) {
+        if (expression[0] === "-" && !operators.test(expression.slice(1, expression.length - 3))) return;
         if (operators.test(expression.slice(0, expression.length - 3))) {
           updateDisplay(displayResult, operate(expression.slice(0, expression.length - 3)));
         } else {
