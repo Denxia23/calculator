@@ -1,4 +1,4 @@
-//display function
+//display functions
 function updateDisplay(display, text) {
   display.innerText = text;
 }
@@ -7,32 +7,29 @@ function clearDisplay(display) {
   display.innerText = "";
 }
 
-function getResult(expression, displayExpression, displayResult, history) {
-  result = operate(expression);
-  if (result === "ERROR") {
-    updateDisplay(displayResult,"error");
-    return expression;
-  }
-  
-  updateDisplay(displayExpression, result);
-  clearDisplay(displayResult);
-  historyElement = `${expression} = ${result}`;
-  history.push(historyElement);
-  return result;
+function isSingleNumber(expression, operators) {
+  if (!operators.test(expression)) return true;
+  if (expression[0] === "-" && !operators.test(expression.slice(1))) return true;
+  return false;
 }
 
+//auto result
 function autoResult(expression, operators, displayResult) {
+  //ends with .
+  if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+    expression = expression.slice(0, expression.length - 4);
+  }
+  //division by 0
   if (operate(expression) === "ERROR") {
     clearDisplay(displayResult);
     return;
-  };
-  
-  if (operators.test(expression)) {
-    if (expression[0] === "-" && !operators.test(expression.slice(1))) return
-    
-    if (expression.endsWith(".") && expression[expression.length - 2] === " ") return;
-    updateDisplay(displayResult, operate(expression));
   }
+  //single number
+  if (isSingleNumber(expression, operators)) {
+    clearDisplay(displayResult);
+    return;
+  }
+  updateDisplay(displayResult, operate(expression));
 }
 
 //input handle
@@ -47,15 +44,16 @@ function handleDigit(digit, expression) {
 
 function handleOperator(operator, expression) {
   pressedKey = operator;
-  
+
   //empty string
   if (expression === "") {
     if (pressedKey === "-") {
-      return expression = "-";
-    } else {
-      return expression;
+      return "-";
     }
-  } 
+    return expression;
+  }
+  //
+  if (expression === "-") return expression;
 
   if (pressedKey === "/") {
     pressedKey = "÷";
@@ -70,13 +68,31 @@ function handleOperator(operator, expression) {
     if (/[÷×]/.test(expression[expression.length - 2]) && pressedKey === "-") {
       return expression + "-";
     }
-    return expression.slice(0,expression.length - 3) + ` ${pressedKey } `; 
+    return expression.slice(0, expression.length - 3) + ` ${pressedKey} `;
   }
 
   if (expression.endsWith(".") && expression[expression.length - 2] === " ") return expression;
-  
+
   expression += ` ${pressedKey} `;
   return expression;
+}
+
+function handleDeletion(expression) {
+  return expression.endsWith(" ") ? expression.slice(0, expression.length - 3) : expression.slice(0, expression.length - 1);
+}
+
+function handleResult(expression, displayExpression, displayResult, history) {
+  result = operate(expression);
+  if (result === "ERROR") {
+    updateDisplay(displayResult, "error");
+    return expression;
+  }
+
+  updateDisplay(displayExpression, result);
+  clearDisplay(displayResult);
+  historyElement = `${expression} = ${result}`;
+  history.push(historyElement);
+  return result;
 }
 
 //math functions
@@ -164,8 +180,8 @@ function main() {
       button.addEventListener("click", () => {
         button.blur();
         //checks if the expression is valid
-        if (operators.test(expression) && !expression.endsWith(" ")) {
-          expression = getResult(expression, displayExpression, displayResult, history);
+        if (!isSingleNumber(expression, operators) && !expression.endsWith(" ")) {
+          expression = handleResult(expression, displayExpression, displayResult, history);
         }
       });
       continue;
@@ -184,30 +200,15 @@ function main() {
     if (button.dataset.value === "delete") {
       button.addEventListener("click", () => {
         button.blur();
-        expression = expression.endsWith(" ") ? expression.slice(0, expression.length - 3) : expression.slice(0, expression.length - 1);
+        expression = handleDeletion(expression);
         updateDisplay(displayExpression, expression);
 
-        //checks if the expression ends with an operator, and if it isn't a single number        
+        //performs the expression and refreshes the result in display if possible
         if (expression.endsWith(" ") || expression.endsWith("-")) {
-          if (operators.test(expression.slice(0, expression.length - 3))) {
-            updateDisplay(displayResult, operate(expression.slice(0, expression.length - 3)));
-          } else {
-            clearDisplay(displayResult);
-          }
+          autoResult(expression.slice(0, expression.length - 3), operators, displayResult);
           return;
         }
-
-        if (operators.test(expression)) {
-          if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
-            if (operators.test(expression.slice(0, expression.length - 4))) {
-              updateDisplay(displayResult, operate(expression.slice(0, expression.length - 4)));
-            } else {
-              clearDisplay(displayResult);
-            }
-            return;
-          }
-          updateDisplay(displayResult, operate(expression));
-        }
+        autoResult(expression, operators, displayResult);
       });
       continue;
     }
@@ -232,38 +233,22 @@ function main() {
   window.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       //checks if the expression is valid
-      if (operators.test(expression) && !expression.endsWith(" ")) {
-        expression = getResult(expression, displayExpression, displayResult, history);
+      if (!isSingleNumber(expression, operators) && !expression.endsWith(" ")) {
+        expression = handleResult(expression, displayExpression, displayResult, history);
       }
       return;
     }
 
     if (e.key === "Backspace") {
-      expression = expression.endsWith(" ") ? expression.slice(0, expression.length - 3) : expression.slice(0, expression.length - 1);
+      expression = handleDeletion(expression);
       updateDisplay(displayExpression, expression);
 
       //performs the expression and refreshes the result in display if possible
       if (expression.endsWith(" ") || expression.endsWith("-")) {
-        if (expression[0] === "-" && !operators.test(expression.slice(1, expression.length - 3))) return;
-        if (operators.test(expression.slice(0, expression.length - 3))) {
-          updateDisplay(displayResult, operate(expression.slice(0, expression.length - 3)));
-        } else {
-          clearDisplay(displayResult);
-        }
+        autoResult(expression.slice(0, expression.length - 3), operators, displayResult);
         return;
       }
-
-      if (operators.test(expression)) {
-        if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
-          if (operators.test(expression.slice(0, expression.length - 4))) {
-            updateDisplay(displayResult, operate(expression.slice(0, expression.length - 4)));
-          } else {
-            clearDisplay(displayResult);
-          }
-          return;
-        }
-        updateDisplay(displayResult, operate(expression));
-      }
+      autoResult(expression, operators, displayResult);
       return;
     }
 
