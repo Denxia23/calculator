@@ -51,8 +51,10 @@ function handleOperator(operator, expression) {
     }
     return expression;
   }
-  //
+  if (expression.endsWith("-")) return expression;
   if (expression === "-") return expression;
+  if (expression.endsWith(" .") || expression === "." || expression.endsWith("-.")) return expression;
+
   if (pressedKey === "/") {
     pressedKey = "÷";
   }
@@ -66,8 +68,6 @@ function handleOperator(operator, expression) {
     }
     return expression.slice(0, expression.length - 3) + ` ${pressedKey} `;
   }
-
-  if ((expression.endsWith(".") && expression[expression.length - 2] === " ") || expression === "." || expression === "-.") return expression;
 
   expression += ` ${pressedKey} `;
   return expression;
@@ -83,7 +83,6 @@ function handleResult(expression, displayExpression, displayResult, history) {
     updateDisplay(displayResult, "Can't divide by 0");
     return expression;
   }
-
   if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
     updateDisplay(displayResult, "Format error");
     return expression;
@@ -93,7 +92,6 @@ function handleResult(expression, displayExpression, displayResult, history) {
     updateDisplay(displayResult, "Format error");
     return expression;
   }
-
 
   updateDisplay(displayExpression, result);
   clearDisplay(displayResult);
@@ -178,7 +176,7 @@ function main() {
 
   historyButton.addEventListener("click", () => {
     console.log(history);
-  })
+  });
 
   let expression = "";
   let history = [];
@@ -192,7 +190,7 @@ function main() {
       button.addEventListener("click", () => {
         button.blur();
         //checks if the expression is valid
-        if (isSingleNumber(expression,operators || expression.endsWith(" "))) return;
+        if (isSingleNumber(expression, operators || expression.endsWith(" "))) return;
         expression = handleResult(expression, displayExpression, displayResult, history);
       });
       continue;
@@ -244,7 +242,7 @@ function main() {
   window.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       //checks if the expression is valid
-      if (isSingleNumber(expression,operators || expression.endsWith(" "))) return;
+      if (isSingleNumber(expression, operators) || expression.endsWith(" ")) return;
       expression = handleResult(expression, displayExpression, displayResult, history);
       return;
     }
