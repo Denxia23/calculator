@@ -19,13 +19,7 @@ function autoResult(expression, operators, displayResult) {
   if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
     expression = expression.slice(0, expression.length - 4);
   }
-  //division by 0
-  if (operate(expression) === "ERROR") {
-    clearDisplay(displayResult);
-    return;
-  }
-  //single number
-  if (isSingleNumber(expression, operators)) {
+  if (operate(expression) === "ERROR" || isSingleNumber(expression, operators)) {
     clearDisplay(displayResult);
     return;
   }
@@ -44,7 +38,6 @@ function handleDigit(digit, expression) {
 
 function handleOperator(operator, expression) {
   pressedKey = operator;
-
   //empty string
   if (expression === "") {
     if (pressedKey === "-") {
@@ -54,24 +47,21 @@ function handleOperator(operator, expression) {
   }
   //
   if (expression === "-") return expression;
-
   if (pressedKey === "/") {
     pressedKey = "÷";
   }
-
   if (pressedKey === "*") {
     pressedKey = "×";
   }
-
   //multiplication and divisition by a negative number
   if (expression.endsWith(" ")) {
-    if (/[÷×]/.test(expression[expression.length - 2]) && pressedKey === "-") {
+    if (/[÷×%]/.test(expression[expression.length - 2]) && pressedKey === "-") {
       return expression + "-";
     }
     return expression.slice(0, expression.length - 3) + ` ${pressedKey} `;
   }
 
-  if (expression.endsWith(".") && expression[expression.length - 2] === " ") return expression;
+  if ((expression.endsWith(".") && expression[expression.length - 2] === " ") || expression === "." || expression === "-.") return expression;
 
   expression += ` ${pressedKey} `;
   return expression;
@@ -84,7 +74,12 @@ function handleDeletion(expression) {
 function handleResult(expression, displayExpression, displayResult, history) {
   result = operate(expression);
   if (result === "ERROR") {
-    updateDisplay(displayResult, "error");
+    updateDisplay(displayResult, "Can't divide by 0");
+    return expression;
+  }
+
+  if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
+    updateDisplay(displayResult, "Format error");
     return expression;
   }
 
@@ -180,9 +175,8 @@ function main() {
       button.addEventListener("click", () => {
         button.blur();
         //checks if the expression is valid
-        if (!isSingleNumber(expression, operators) && !expression.endsWith(" ")) {
-          expression = handleResult(expression, displayExpression, displayResult, history);
-        }
+        if (isSingleNumber(expression,operators || expression.endsWith(" "))) return;
+        expression = handleResult(expression, displayExpression, displayResult, history);
       });
       continue;
     }
@@ -233,9 +227,8 @@ function main() {
   window.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       //checks if the expression is valid
-      if (!isSingleNumber(expression, operators) && !expression.endsWith(" ")) {
-        expression = handleResult(expression, displayExpression, displayResult, history);
-      }
+      if (isSingleNumber(expression,operators || expression.endsWith(" "))) return;
+      expression = handleResult(expression, displayExpression, displayResult, history);
       return;
     }
 
@@ -253,7 +246,7 @@ function main() {
     }
 
     //operators
-    if (/([+/*-])/.test(e.key)) {
+    if (/([+/*%-])/.test(e.key)) {
       expression = handleOperator(e.key, expression);
       updateDisplay(displayExpression, expression);
       return;
