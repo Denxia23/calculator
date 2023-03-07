@@ -89,7 +89,7 @@ function handleResult(expression, displayExpression, displayResult, history) {
     return expression;
   }
 
-  if (expression.endsWith(".") && expression[expression.length - 2] === "-"); {
+  if (expression.endsWith(".") && expression[expression.length - 2] === "-") {
     updateDisplay(displayResult, "Format error");
     return expression;
   }
@@ -174,6 +174,11 @@ function operate(expression) {
 function main() {
   const displayExpression = document.querySelector(".display .expression");
   const displayResult = document.querySelector(".display .result");
+  const historyButton = document.querySelector(".display .btn-history");
+
+  historyButton.addEventListener("click", () => {
+    console.log(history);
+  })
 
   let expression = "";
   let history = [];

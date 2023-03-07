@@ -1,11 +1,25 @@
 /* variables */
 :root {
     --ff-primary: "Poppins", sans-serif;
+    --ff-clr: #FFFFFF;
     --clr-bg: #FFA800;
     --clr-dark-700: #222831;
     --clr-dark-600: #393E46;
     --clr-accent-700: #FF4C29;
     --clr-accent-600: #F2792E;
+
+    --clr-bg-light: #FFB524;
+    --clr-light-700: #eeeeee;
+    --clr-light-600: #dde1e7;
+    --clr-accent-light-700: #f67e66;
+    --clr-accent-light-600: #f4985f;
+
+    /* --clr-dark-700: var(--clr-light-700);
+    --clr-dark-600: var(--clr-light-600);
+    --clr-accent-700: var(--clr-accent-light-700);
+    --clr-accent-600: var(--clr-accent-light-600); */
+
+
 }
 
 /* css reset */
@@ -65,7 +79,7 @@ button {
     height: 28vh;
     padding: 0 40px 0 20px;
     border-radius: 8px 8px 35px 35px;
-    color: white;
+    color: var(--ff-clr);
     background-color: var(--clr-dark-600);
 }
 
@@ -140,7 +154,7 @@ button {
     max-height: 90px;
     aspect-ratio: 1/1;
     height: 90%;
-    color: white;
+    color: var(--ff-clr);
     background-color: var(--clr-dark-600);
     border-radius: 100%;
     font-size: 2.1rem;
