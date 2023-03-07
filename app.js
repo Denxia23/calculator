@@ -15,10 +15,16 @@ function isSingleNumber(expression, operators) {
 
 //auto result
 function autoResult(expression, operators, displayResult) {
-  //ends with .
+  //ends with "operator ."
   if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
     expression = expression.slice(0, expression.length - 4);
   }
+  //ends with "operator -."
+  if (expression.endsWith(".") && expression[expression.length - 2] === "-") {
+    clearDisplay(displayResult);
+    return;
+  }
+
   if (operate(expression) === "ERROR" || isSingleNumber(expression, operators)) {
     clearDisplay(displayResult);
     return;
@@ -82,6 +88,12 @@ function handleResult(expression, displayExpression, displayResult, history) {
     updateDisplay(displayResult, "Format error");
     return expression;
   }
+
+  if (expression.endsWith(".") && expression[expression.length - 2] === "-"); {
+    updateDisplay(displayResult, "Format error");
+    return expression;
+  }
+
 
   updateDisplay(displayExpression, result);
   clearDisplay(displayResult);
