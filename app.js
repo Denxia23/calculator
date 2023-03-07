@@ -190,7 +190,7 @@ function main() {
       button.addEventListener("click", () => {
         button.blur();
         //checks if the expression is valid
-        if (isSingleNumber(expression, operators || expression.endsWith(" "))) return;
+        if (isSingleNumber(expression, operators) || expression.endsWith(" ")) return;
         expression = handleResult(expression, displayExpression, displayResult, history);
       });
       continue;
