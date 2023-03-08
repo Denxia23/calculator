@@ -2,23 +2,23 @@
 :root {
     --ff-primary: "Poppins", sans-serif;
     --ff-clr: #FFFFFF;
-    --clr-bg: #FFA800;
+    
     --clr-dark-700: #222831;
     --clr-dark-600: #393E46;
     --clr-accent-700: #FF4C29;
     --clr-accent-600: #F2792E;
 
-    --clr-bg-light: #FFB524;
     --clr-light-700: #eeeeee;
     --clr-light-600: #dde1e7;
     --clr-accent-light-700: #f67e66;
     --clr-accent-light-600: #f4985f;
 
-    /* --clr-dark-700: var(--clr-light-700);
-    --clr-dark-600: var(--clr-light-600);
-    --clr-accent-700: var(--clr-accent-light-700);
-    --clr-accent-600: var(--clr-accent-light-600); */
-
+    --clr-bg: #FFA800;
+    --clr-display: var(--clr-dark-600);
+    --clr-buttons-bg: var(--clr-dark-700);
+    --clr-digits: var(--clr-dark-600);
+    --clr-operators: var(--clr-accent-600);
+    --clr-functions: var(--clr-accent-700);
 
 }
 
@@ -45,10 +45,10 @@ ul[role="list"] {
 
 /* global rules */
 body {
+    min-height: 100vh;
     display: flex;
     align-items: center;
     overflow: hidden;
-    min-height: 100vh;
     font-family: var(--ff-primary);
     background-color: var(--clr-bg);
 }
@@ -61,44 +61,70 @@ button {
 
 /* calculator */
 .calculator {
+    width: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     margin-inline: auto;
-    width: 100%;
-    min-height: 100vh;
-    background-color: var(--clr-dark-700);
+    background-color: var(--clr-buttons-bg);
 }
 
 .display {
+    width: 100%;
+    min-height: 30%; 
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    width: 100%;
-    height: 28vh;
-    padding: 0 40px 0 20px;
     border-radius: 8px 8px 35px 35px;
     color: var(--ff-clr);
     background-color: var(--clr-dark-600);
 }
 
 .display .container {
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 40px 20px;
+}
+
+.history {
+    width: 100%;
+    height: 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: height 0.5s ease;
+    overflow: hidden;
+    background-color: #2f343c;
+}
+
+.history.open {
+    height: 30%;
+}
+
+.history-container {
+    overflow: auto;
+    color: var(--ff-clr);
+    font-size: 1.4rem;
+    font-weight: 300;
+    height: 80%;
+    padding-left: 3%;
+    width: 90%;
+}
+
+.history-container::-webkit-scrollbar {
+    width: 7px;
 }
 
 .display .btn-history {
     position: absolute;
     width: 40px;
-    top: 30px;
-    left: 25px;
-}
-
-.display .overflow {
-    width: 100%;
+    top: 12%;
+    left: 6%;
 }
 
 .display .container h2 {
@@ -122,7 +148,7 @@ button {
 
 .display .container .result {
     min-height: 42.06px;
-    margin-bottom: -50px;
+    margin-bottom: -17%;
     font-size: 1.75rem;
     font-weight: 400;
     opacity: 0.75;
@@ -136,7 +162,7 @@ button {
 
 .buttons {
     width: 100%;
-    height: 70vh;
+    height: 100%;
     margin-inline: auto;
     padding: 6% 1.7%;
     display: grid;
@@ -146,14 +172,22 @@ button {
     align-items: center;
 }
 
+.buttons.collapsed button {
+    aspect-ratio: 2/1;
+    border-radius: 30px;
+}
+
 .buttons button {
+    height: 90%;
+    max-height: 90px;
+    max-width: 100%;
+    aspect-ratio: 1/1;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-inline: auto;
-    max-height: 90px;
-    aspect-ratio: 1/1;
-    height: 90%;
+    transition: 0.5s ease;
+    transition-property: aspect-ratio,border-radius;
     color: var(--ff-clr);
     background-color: var(--clr-dark-600);
     border-radius: 100%;
@@ -161,9 +195,9 @@ button {
 }
 
 .buttons button:first-child {
-    grid-column: span 2;
     width: 100%;
     aspect-ratio: initial;
+    grid-column: span 2;
     border-radius: 40px;
     background-color: var(--clr-accent-700);
 }
@@ -187,7 +221,6 @@ button {
     }
 }
 
-
 @media screen and (min-width: 475px) and (max-width: 700px) {
     .buttons button {
         width: 100%;
@@ -208,13 +241,24 @@ button {
     }
 
     .calculator .display {
-        border-radius: 20px 20px 35px 35px;
+        border-radius: 0 0 35px 35px;
     }
+    
     .buttons {
-        height: 75%;
         padding: 40px 10px;
         column-gap: 10px;
         row-gap: 10px;
     }
 
+}
+
+@media screen and (max-height: 500px) {
+    .buttons {
+        gap: 2.5%;
+    }
+    
+    .buttons button {
+        aspect-ratio: 1.5/1;
+        border-radius: 30px;
+    }   
 }

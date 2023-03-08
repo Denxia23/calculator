@@ -173,9 +173,12 @@ function main() {
   const displayExpression = document.querySelector(".display .expression");
   const displayResult = document.querySelector(".display .result");
   const historyButton = document.querySelector(".display .btn-history");
+  const historyDiv = document.querySelector(".history");
+  const buttonsDiv = document.querySelector(".buttons");
 
   historyButton.addEventListener("click", () => {
-    console.log(history);
+    historyDiv.classList.toggle("open");
+    buttonsDiv.classList.toggle("collapsed");
   });
 
   let expression = "";
