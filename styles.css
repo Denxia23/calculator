@@ -7,13 +7,9 @@
     --clr-dark-600: #393E46;
     --clr-accent-700: #FF4C29;
     --clr-accent-600: #F2792E;
-
-    --clr-light-700: #eeeeee;
-    --clr-light-600: #dde1e7;
-    --clr-accent-light-700: #f67e66;
-    --clr-accent-light-600: #f4985f;
-
     --clr-bg: #FFA800;
+    
+    --clr-history: #2f343c; 
     --clr-display: var(--clr-dark-600);
     --clr-buttons-bg: var(--clr-dark-700);
     --clr-digits: var(--clr-dark-600);
@@ -78,7 +74,7 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    border-radius: 8px 8px 35px 35px;
+    border-radius: 0 0 35px 35px;
     color: var(--ff-clr);
     background-color: var(--clr-dark-600);
 }
@@ -94,12 +90,24 @@ button {
 .history {
     width: 100%;
     height: 0%;
+    transition: height 0.5s ease;
+    overflow: hidden;
+    background-color: var(--clr-history);
+}
+
+.history .outer-container {
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: height 0.5s ease;
-    overflow: hidden;
-    background-color: #2f343c;
+    padding-block: 3.5%;
+}
+
+.history p {
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .history.open {
@@ -107,13 +115,14 @@ button {
 }
 
 .history-container {
+    width: 90%;
+    height: 100%;
+    position: relative;
     overflow: auto;
+    padding-inline: 3%;
     color: var(--ff-clr);
     font-size: 1.4rem;
     font-weight: 300;
-    height: 80%;
-    padding-left: 3%;
-    width: 90%;
 }
 
 .history-container::-webkit-scrollbar {
@@ -214,6 +223,7 @@ button {
     width: 38px;
 }
 
+
 @media screen and (min-width: 390px) and (max-width: 475px) {
     .buttons {
         padding: 9% 1.9%;
@@ -235,6 +245,7 @@ button {
 @media screen and (min-width: 700px) {
     .calculator {
         width: 400px;
+        box-shadow: 1px 3px 22px 12px rgba(0, 0, 0, 0.34);
         min-height: initial;
         height: 800px;
         border-radius: 30px;
@@ -253,6 +264,15 @@ button {
 }
 
 @media screen and (max-height: 500px) {
+    .display .btn-history {
+        width: 35px;
+        top: 10%;
+    }
+    
+    .display {
+        min-height: 35%;
+    }
+
     .buttons {
         gap: 2.5%;
     }

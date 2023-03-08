@@ -77,12 +77,13 @@ function handleDeletion(expression) {
   return expression.endsWith(" ") ? expression.slice(0, expression.length - 3) : expression.slice(0, expression.length - 1);
 }
 
-function handleResult(expression, displayExpression, displayResult, history) {
+function handleResult(expression, displayExpression, displayResult, historyContainer) {
   result = operate(expression);
   if (result === "ERROR") {
     updateDisplay(displayResult, "Can't divide by 0");
     return expression;
   }
+  
   if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
     updateDisplay(displayResult, "Format error");
     return expression;
@@ -92,11 +93,17 @@ function handleResult(expression, displayExpression, displayResult, history) {
     updateDisplay(displayResult, "Format error");
     return expression;
   }
+  //fallback
+  if (result === "NaN") {
+    updateDisplay(displayResult, "Format error");
+    return expression;
+  }
 
   updateDisplay(displayExpression, result);
   clearDisplay(displayResult);
-  historyElement = `${expression} = ${result}`;
-  history.push(historyElement);
+  historyElement = document.createElement("p");
+  historyElement.innerText = `${expression} = ${result}`;
+  historyContainer.appendChild(historyElement);
   return result;
 }
 
@@ -174,15 +181,16 @@ function main() {
   const displayResult = document.querySelector(".display .result");
   const historyButton = document.querySelector(".display .btn-history");
   const historyDiv = document.querySelector(".history");
+  const historyContainer = document.querySelector(".history-container");
   const buttonsDiv = document.querySelector(".buttons");
 
   historyButton.addEventListener("click", () => {
+    historyButton.blur();
     historyDiv.classList.toggle("open");
     buttonsDiv.classList.toggle("collapsed");
   });
 
   let expression = "";
-  let history = [];
 
   const operators = /([+×÷%-])/;
   const buttons = document.querySelectorAll(".buttons button");
@@ -194,7 +202,7 @@ function main() {
         button.blur();
         //checks if the expression is valid
         if (isSingleNumber(expression, operators) || expression.endsWith(" ")) return;
-        expression = handleResult(expression, displayExpression, displayResult, history);
+        expression = handleResult(expression, displayExpression, displayResult, historyContainer);
       });
       continue;
     }
@@ -246,7 +254,7 @@ function main() {
     if (e.key === "Enter") {
       //checks if the expression is valid
       if (isSingleNumber(expression, operators) || expression.endsWith(" ")) return;
-      expression = handleResult(expression, displayExpression, displayResult, history);
+      expression = handleResult(expression, displayExpression, displayResult, historyContainer);
       return;
     }
 
