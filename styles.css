@@ -41,7 +41,7 @@ ul[role="list"] {
 
 /* global rules */
 body {
-    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -58,7 +58,7 @@ button {
 /* calculator */
 .calculator {
     width: 100%;
-    height: 100dvh;
+    height: 100svh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
