@@ -83,7 +83,7 @@ function handleResult(expression, displayExpression, displayResult, historyConta
     updateDisplay(displayResult, "Can't divide by 0");
     return expression;
   }
-  
+
   if (expression.endsWith(".") && expression[expression.length - 2] === " ") {
     updateDisplay(displayResult, "Format error");
     return expression;
@@ -197,29 +197,50 @@ function main() {
 
   //buttons
   for (const button of buttons) {
-    if (button.dataset.value === "=") {
-      button.addEventListener("click", () => {
-        button.blur();
-        //checks if the expression is valid
+    //button effect on press
+    button.addEventListener("touchstart", () => {
+      button.classList.add("pressed");
+    });
+
+    button.addEventListener("touchend", () => {
+      button.classList.remove("pressed");
+    });
+
+    button.addEventListener("touchmove", (e) => {
+      if (e.target !== document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)) {
+        e.target.classList.remove("pressed");
+        return;
+      }
+    });
+
+    button.addEventListener("mousedown", () => {
+      button.classList.add("pressed");
+    });
+
+    button.addEventListener("mouseup", () => {
+      button.classList.remove("pressed");
+    });
+
+    button.addEventListener("mouseout", () => {
+      button.classList.remove("pressed");
+    });
+
+    button.addEventListener("click", (e) => {
+      button.blur();
+      if (button.dataset.value === "=") {
         if (isSingleNumber(expression, operators) || expression.endsWith(" ")) return;
         expression = handleResult(expression, displayExpression, displayResult, historyContainer);
-      });
-      continue;
-    }
+        return;
+      }
 
-    if (button.dataset.value === "clear") {
-      button.addEventListener("click", () => {
-        button.blur();
+      if (button.dataset.value === "clear") {
         expression = "";
         clearDisplay(displayExpression);
         clearDisplay(displayResult);
-      });
-      continue;
-    }
+        return;
+      }
 
-    if (button.dataset.value === "delete") {
-      button.addEventListener("click", () => {
-        button.blur();
+      if (button.dataset.value === "delete") {
         expression = handleDeletion(expression);
         updateDisplay(displayExpression, expression);
 
@@ -229,13 +250,10 @@ function main() {
           return;
         }
         autoResult(expression, operators, displayResult);
-      });
-      continue;
-    }
+        return;
+      }
 
-    //operators and digits
-    button.addEventListener("click", () => {
-      button.blur();
+      //operators and digits
       if (operators.test(button.innerText)) {
         expression = handleOperator(button.innerText, expression);
         updateDisplay(displayExpression, expression);
@@ -249,7 +267,8 @@ function main() {
       }
     });
   }
-  //keyboard support
+
+  //keyboard input
   window.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       //checks if the expression is valid
@@ -262,7 +281,7 @@ function main() {
       expression = handleDeletion(expression);
       updateDisplay(displayExpression, expression);
 
-      //performs the expression and refreshes the result in display if possible
+      //performs the operations and refreshes the result in display if possible
       if (expression.endsWith(" ") || expression.endsWith("-")) {
         autoResult(expression.slice(0, expression.length - 3), operators, displayResult);
         return;
