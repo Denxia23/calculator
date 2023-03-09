@@ -186,22 +186,26 @@ button {
 }
 
 .buttons.collapsed button {
+    transition: aspect-ratio 0.4s ease, border-radius 0.4s ease;
     aspect-ratio: 2/1;
     border-radius: 30px;
 }
 
+.buttons.expand button {
+    transition: aspect-ratio 0.3s ease, border-radius 0.3s ease;
+}
+
 .buttons button {
-    height: 90%;
+    height: 100%;
     user-select: none;
-    max-height: 90px;
+    max-height: 80px;
     max-width: 100%;
     aspect-ratio: 1/1;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-inline: auto;
-    transition: aspect-ratio 0.5s ease, border-radius 0.5s ease,
-        background-color 0.3s ease;
+    transition: aspect-ratio 0.8s ease, border-radius 0.8s ease;
     color: var(--ff-clr);
     background-color: var(--clr-dark-600);
     border-radius: 100%;
@@ -230,7 +234,10 @@ button {
 
 /* button effect on touch */
 .buttons button.pressed {
-    transition: border-radius 0.1s ease;
+    transition: border-radius 0.15s ease;
+}
+
+.buttons button.pressed {
     border-radius: 25px;
     background-color: var(--clr-digits-active);
 }
@@ -281,12 +288,13 @@ button {
         column-gap: 10px;
         row-gap: 10px;
     }
-
+    
     button {
         cursor: pointer;
     }
 }
 
+/* height media queries */
 @media screen and (max-height: 500px) {
     .display .btn-history {
         width: 35px;
@@ -304,5 +312,15 @@ button {
     .buttons button {
         aspect-ratio: 1.5/1;
         border-radius: 30px;
+    }
+
+    .buttons button.pressed {
+        border-radius: 16px;
+    }
+}
+
+@media screen and (min-height: 800px) and (max-width: 700px) {
+    .buttons button {
+        max-height: 90px;
     }
 }

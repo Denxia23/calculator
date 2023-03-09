@@ -7,6 +7,7 @@ function clearDisplay(display) {
   display.innerText = "";
 }
 
+//validation function
 function isSingleNumber(expression, operators) {
   if (!operators.test(expression)) return true;
   if (expression[0] === "-" && !operators.test(expression.slice(1))) return true;
@@ -29,6 +30,12 @@ function autoResult(expression, operators, displayResult) {
     clearDisplay(displayResult);
     return;
   }
+  //fallback
+  if (operate(expression) === "NaN") {
+    clearDisplay(displayResult);
+    return;
+  }
+
   updateDisplay(displayResult, operate(expression));
 }
 
@@ -172,7 +179,7 @@ function operate(expression) {
       i -= 2;
     }
   }
-  return array[0];
+  return (Math.round((parseFloat(array[0]) + Number.EPSILON) * 10000) / 10000).toString();
 }
 
 //main
@@ -183,20 +190,27 @@ function main() {
   const historyDiv = document.querySelector(".history");
   const historyContainer = document.querySelector(".history-container");
   const buttonsDiv = document.querySelector(".buttons");
+  const buttons = document.querySelectorAll(".buttons button");
 
+  let expression = "";
+  const operators = /([+×÷%-])/;
+
+  //buttons
   historyButton.addEventListener("click", () => {
     historyButton.blur();
     historyDiv.classList.toggle("open");
+    if (buttonsDiv.classList.contains("collapsed")) {
+      buttonsDiv.classList.add("expand");
+    }
     buttonsDiv.classList.toggle("collapsed");
   });
 
-  let expression = "";
-
-  const operators = /([+×÷%-])/;
-  const buttons = document.querySelectorAll(".buttons button");
-
-  //buttons
   for (const button of buttons) {
+    button.addEventListener("transitionend", (e) => {
+      if (e.propertyName !== "aspect-ratio") return;
+      buttonsDiv.classList.remove("expand");
+    });
+
     //button effect on press
     button.addEventListener("touchstart", () => {
       button.classList.add("pressed");
@@ -281,7 +295,6 @@ function main() {
       expression = handleDeletion(expression);
       updateDisplay(displayExpression, expression);
 
-      //performs the operations and refreshes the result in display if possible
       if (expression.endsWith(" ") || expression.endsWith("-")) {
         autoResult(expression.slice(0, expression.length - 3), operators, displayResult);
         return;
