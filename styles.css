@@ -272,12 +272,12 @@ button {
 
 @media screen and (min-width: 700px) {
     .calculator {
-        width: 400px;
-        box-shadow: 1px 3px 22px 12px rgba(0, 0, 0, 0.34);
-        min-height: initial;
-        height: 90%;
+        width: initial;
+        height: 95%;
         max-height: 800px;
+        aspect-ratio: 1/2;
         border-radius: 30px;
+        box-shadow: 1px 3px 22px 12px rgba(0, 0, 0, 0.34);
     }
 
     .calculator .display {
