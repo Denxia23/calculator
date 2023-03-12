@@ -275,7 +275,8 @@ button {
         width: 400px;
         box-shadow: 1px 3px 22px 12px rgba(0, 0, 0, 0.34);
         min-height: initial;
-        height: 800px;
+        height: 90%;
+        max-height: 800px;
         border-radius: 30px;
     }
 
