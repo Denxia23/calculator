@@ -284,6 +284,10 @@ button {
         border-radius: 0 0 35px 35px;
     }
 
+    .display .container {
+        padding-bottom: 2.2%;
+    }
+
     .buttons {
         padding: 40px 10px;
         column-gap: 10px;
@@ -292,6 +296,10 @@ button {
     
     button {
         cursor: pointer;
+    }
+
+    .buttons button {
+        height: 91%;
     }
 }
 
