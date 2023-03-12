@@ -124,7 +124,7 @@ button {
     overflow: auto;
     padding-inline: 3%;
     color: var(--ff-clr);
-    font-size: 1.4rem;
+    font-size: 22px;
     font-weight: 300;
 }
 
@@ -161,14 +161,14 @@ button {
 .display .container .result {
     min-height: 42.06px;
     margin-bottom: -17%;
-    font-size: 1.75rem;
+    font-size: 28px;
     font-weight: 400;
     opacity: 0.75;
 }
 
 .display .expression {
-    font-size: 2.6rem;
-    letter-spacing: 0.2rem;
+    font-size: 42px;
+    letter-spacing: 3.2px;
     font-weight: 400;
 }
 
@@ -209,7 +209,7 @@ button {
     color: var(--ff-clr);
     background-color: var(--clr-dark-600);
     border-radius: 100%;
-    font-size: 2.1rem;
+    font-size: 33.6px;
 }
 
 .buttons button:first-child {
